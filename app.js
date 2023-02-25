@@ -1,5 +1,5 @@
 //npm install --save express
-//npm install socket.io
+//npm install --save socket.io
 //npm install nodemon
 
 const { Socket } = require("dgram");
