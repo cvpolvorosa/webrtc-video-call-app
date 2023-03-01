@@ -124,6 +124,7 @@ body {
     border-radius: 8px;
     background: white;
     transition: 0.5s;
+    cursor: pointer;
 }
 
 .personal_code_connecting_container {
