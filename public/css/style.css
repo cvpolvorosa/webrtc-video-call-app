@@ -410,7 +410,7 @@ body {
     width: 275px;
     height: 275px;
     border-radius: 275px;
-    background: linear-gradient(168.68deg, #0052c9 1.12%, #0a91db 100%);
+    background: linear-gradient(135deg, #4b286d, 75%, #e53293);
     display: flex;
     justify-content: center;
     align-items: center;

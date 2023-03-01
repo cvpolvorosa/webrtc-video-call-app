@@ -58,12 +58,12 @@ io.on("connection", (socket) => {//if the connection will occur, we'll get the s
         console.log("User Disconnected");
 
         //Once disconnected, filter peerSocketId (method will only return elements that returns true)
-        const newConnectedPeers = connectedPeers.filter((peerSocketId) => {
-            return peerSocketId !== socket.io;
-        });
-        //Updates the connected pears with new filtered elements
-        connectedPeers = newConnectedPeers;
-    });
+        const newConnectedPeers = connectedPeers.filter((peerSocketId) =>
+            peerSocketId !== socket.id
+        );
+    //Updates the connected pears with new filtered elements
+    connectedPeers = newConnectedPeers;
+});
 });
 server.listen(PORT, () => { //Starts the server
     console.log(`Listening on PORT: ${PORT}`)

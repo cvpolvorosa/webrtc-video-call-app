@@ -3,6 +3,7 @@ import * as wss from "./wss.js"
 import * as webRTCHandler from "./webRTCHandler.js"
 import * as constants from "./constants.js"
 
+
 //initialization of socket io connection
 const socket = io("/"); //Defines the connection. Alt: io("localhost:3000"); / is used incase we'll deploy it
 wss.registerSocketEvents(socket); //passing the connection to register socket events
@@ -29,3 +30,5 @@ personalCodeVideoButton.addEventListener("click", () => {
     const callType = constants.callType.VIDEO_PERSONAL_CODE;
     webRTCHandler.sendPreOffer(callType, calleePersonalCode);
 })
+
+
