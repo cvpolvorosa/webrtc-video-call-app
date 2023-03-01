@@ -20,10 +20,24 @@ app.get('/', (req,res) => {
     res.sendFile(__dirname + "/public/index.html")//dirname is the main path the proj is stored
 })
 
+let connectedPears = [];
+
 io.on("connection", (socket) => {//if the connection will occur, we'll get the socket and execute the func
     console.log("User connceted to Socket.io server");
     console.log(socket.id);
-}) 
+    connectedPears.push(socket.id); //pushes the connected IDs to an array
+    console.log(connectedPears);
+    socket.on('disconnect', () => { //listens if the client disconnects (Close browser/tab, lose internet conn, refreshes)
+        console.log("User Disconnected");
+
+        //Once disconnected, filter peerSocketId (method will only return elements that returns true)
+        const newConnectedPeers = connectedPears.filter((peerSocketId) => {
+            return peerSocketId !== socket.io;
+        });
+        //Updates the connected pears with new filtered elements
+        connectedPears = newConnectedPeers;
+    });
+});
 server.listen(PORT, ()=> { //Starts the server
     console.log(`Listening on PORT: ${PORT}`)
 })
