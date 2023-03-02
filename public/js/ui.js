@@ -138,6 +138,18 @@ export const updateCameraButton = (cameraActive) => { //changes camera button im
     cameraButtonImage.src = cameraActive ? cameraOffImgSrc : cameraOnImgSrc;
 }
 
+// ui chat messages
+export const appendMessage = (message, right = false) => {
+    const messageContainer = document.getElementById("messages_container");
+    const messageElement = right ? elements.getRightMessage(message) : elements.getLeftMessage(message);
+    messageContainer.appendChild(messageElement);
+};
+
+export const clearMessenger = () => {
+    const messagesContainer = document.getElementById("messages_container");
+    messagesContainer.querySelectorForAll("*").forEach((n) => n.remove());
+}
+
 //ui helper functions
 const enableDashboard = () => {
     const dashboardBlocker = document.getElementById("dashboard_blur");

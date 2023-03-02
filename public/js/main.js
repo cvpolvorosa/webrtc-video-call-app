@@ -57,3 +57,25 @@ switchForScreenSharingButton.addEventListener("click", () => {
     const screenSharingActive = store.getState().screenSharingActive;
     webRTCHandler.switchBetweenCameraAndScreenSharing(screenSharingActive);
 });
+
+//messenger feature
+
+const newMessageInput = document.getElementById("new_message_input");
+newMessageInput.addEventListener("keydown", (event) => {
+    console.log("change occured");
+    const key = event.key;
+
+    if (key === "Enter") {
+        webRTCHandler.sendMessageUsingDataChannel(event.target.value);
+        ui.appendMessage(event.target.value, true); //true, because if we are sending the message put it on the right hand side
+        newMessageInput.value = ""; //empties string after sending
+    }
+})
+
+const sendMessageButton = document.getElementById("send_message_button");
+sendMessageButton.addEventListener("click", () => {
+    const message = newMessageInput.value;
+    webRTCHandler.sendMessageUsingDataChannel(message);
+    ui.appendMessage(message, true)
+    newMessageInput.value = ""; //empties string after sending
+})
