@@ -120,6 +120,23 @@ const showVideoCallElements = () => {
     disableDashboard();
 }
 
+//ui call buttons
+
+const micOnImgSrc = "./utils/images/mic.png"
+const micOffImgSrc = "./utils/images/micOff.png"
+
+export const updateMicButton = (micActive) => { //changes mic button image
+    const micButtonImage = document.getElementById("mic_button_image");
+    micButtonImage.src = micActive ? micOffImgSrc : micOnImgSrc;
+}
+
+const cameraOnImgSrc = "./utils/images/camera.png"
+const cameraOffImgSrc = "./utils/images/cameraOff.png"
+
+export const updateCameraButton = (cameraActive) => { //changes camera button image
+    const cameraButtonImage = document.getElementById("camera_button_image");
+    cameraButtonImage.src = cameraActive ? cameraOffImgSrc : cameraOnImgSrc;
+}
 
 //ui helper functions
 const enableDashboard = () => {
