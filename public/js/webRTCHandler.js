@@ -18,10 +18,7 @@ export const sendPreOffer = (callType, calleePersonalCode) => {
         ui.showCallingDialog(callingDialogRejectCallHandler);
         wss.sendPreOffer(data);
     }
-
-
-
-}
+};
 
 
 export const handlePreOffer = (data) => {
@@ -46,6 +43,7 @@ const acceptCallHandler = () => {
 //reject pre offer answer
 const rejectCallHandler = () => {
     console.log("call rejected")
+    sendPreOfferAnswer();
     sendPreOfferAnswer(constants.preOfferAnswer.CALL_REJECTED);
 }
 
@@ -56,8 +54,37 @@ const callingDialogRejectCallHandler = () => {
 //func for sending pre offer answer, either accept or reject
 const sendPreOfferAnswer = (preOfferAnswer) => {
     const data = {
-        callerSocketId: connectedUserDetails.socketId,
-        preOfferAnswer
-    }
+      callerSocketId: connectedUserDetails.socketId,
+      preOfferAnswer,
+    };
+    console.log("connected socketid")
+    console.log(connectedUserDetails.socketId)
     wss.sendPreOfferAnswer(data);
+}
+
+export const handlePreOfferAnswer = (data) => {
+    const { preOfferAnswer } = data;
+    console.log("pre offer answer received yes")
+    console.log(data);
+
+    //if user is not found/exists
+    if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
+
+    }
+
+    //if callee is in another call
+    if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) {
+
+    }
+
+    // rejected
+    if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) {
+
+    }
+
+    //accepted
+    if (preOfferAnswer === constants.preOfferAnswer.CALL_ACCEPTED) {
+        //send webrtc offer and establish connection
+    }
+
 }

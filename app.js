@@ -2,10 +2,9 @@
 //npm install --save socket.io
 //npm install nodemon
 
-const { Socket } = require("dgram");
+
 const express = require("express"); //will act as the signaling server
 const http = require("http"); //
-const { connect } = require("http2");
 
 const PORT = process.env.PORT || 3000; //process.env.PORT when hosting the app, otherwise will use port 3000 for local
 
@@ -39,8 +38,8 @@ io.on("connection", (socket) => {//if the connection will occur, we'll get the s
         */
         const { calleePersonalCode, callType } = data;
         //checks connectedPeer array if the code is currently connected
-        const connectedPeer = connectedPeers.find((peerSocketId) =>
-            peerSocketId === calleePersonalCode
+        const connectedPeer = connectedPeers.find(
+            (peerSocketId) => peerSocketId === calleePersonalCode
         );
 
         if (connectedPeer) {
@@ -48,16 +47,26 @@ io.on("connection", (socket) => {//if the connection will occur, we'll get the s
                 callerSocketId: socket.id,
                 callType
             }
+            io.to(calleePersonalCode).emit("pre-offer", data); //if connectedpeer is available emit data to them
         }
-        io.to(calleePersonalCode).emit("pre-offer", data); //if connectedpeer is available emit data to them
-
 
     })
 
     socket.on("pre-offer-answer", (data) => {
-        console.log("preoffer answer came")
-        console.log(data)
-    })
+        console.log("pre offer answer received acals")
+        console.log(data);
+        const { callerSocketId } = data
+
+        //check if user is connected/exists
+        const connectedPeer = connectedPeers.find(
+            (peerSocketId) => peerSocketId === callerSocketId
+        );
+        console.log("socketidz")
+        console.log(callerSocketId);
+        if (connectedPeer) {
+            io.to(data.callerSocketId).emit("pre-offer-answer", data);
+        }
+    });
 
     socket.on('disconnect', () => { //listens if the client disconnects (Close browser/tab, lose internet conn, refreshes)
         console.log("User Disconnected");

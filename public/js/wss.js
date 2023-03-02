@@ -6,8 +6,8 @@ let socketIO = null;
 
 export const registerSocketEvents = (socket) => { //after socket connection is passed; register socket listeners
     socketIO = socket;
+
     socket.on("connect", () => {
-        
         console.log("Successfully connected to WSS server");
         //socket.io uses protocols for transferring data between client-server; an implementation for WebSockets
         console.log(socket.id);
@@ -17,14 +17,22 @@ export const registerSocketEvents = (socket) => { //after socket connection is p
 
     socket.on("pre-offer", (data) => { //callee side, if pre-offer was emitted
         webRTCHandler.handlePreOffer(data);
+    });
+
+    socket.on("pre-offer-answer", (data) => {
+        console.log("handled")
+        webRTCHandler.handlePreOfferAnswer(data);
     })
 };
 
 export const sendPreOffer = (data) => {
+    console.log("emmiting to server pre offer event");
     socketIO.emit("pre-offer", data); //After successful connection, emit to the server that we're passing the data
 
 }
 
 export const sendPreOfferAnswer = (data) => {
     socketIO.emit("pre-offer-answer", data);
+    console.log("pre offer answer received here")
+    console.log(data);
 }
