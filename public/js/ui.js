@@ -39,28 +39,28 @@ export const removeAllDialogs = () => {
 export const showInfoDialog = (preOfferAnswer) => {
     let infoDialog = null;
 
-    if(preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED){
+    if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) {
         infoDialog = elements.getInfoDialog(
             "Call rejected",
             "Callee rejected your call"
         )
     }
 
-    if(preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND){
+    if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
         infoDialog = elements.getInfoDialog(
             "Callee not found",
             "Please check your call ID code"
         )
     }
 
-    if(preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE){
+    if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) {
         infoDialog = elements.getInfoDialog(
             "Call is unavailable",
             "Callee is busy. Please try again later"
         )
     }
 
-    if(infoDialog){
+    if (infoDialog) {
         const dialog = document.getElementById("dialog");
         dialog.appendChild(infoDialog);
 
@@ -68,4 +68,64 @@ export const showInfoDialog = (preOfferAnswer) => {
             removeAllDialogs();
         }, [5000]);
     }
+};
+
+export const showCallElements = (callType) => {
+    if (callType === constants.callType.CHAT_PERSONAL_CODE) {
+        showChatCallElements();
+    }
+    if (callType === constants.callType.VIDEO_PERSONAL_CODE) {
+        showVideoCallElements();
+    }
+};
+
+const showChatCallElements = () => {
+    const finishConnectionChatButtonContainer = document.getElementById("finish_chat_button_container");
+    showElement(finishConnectionChatButtonContainer);
+
+    const newMessageInput = document.getElementById("new_message");
+    showElement(newMessageInput);
+    //block panel
+    disableDashboard();
+};
+
+const showVideoCallElements = () => {
+    const callButtons = document.getElementById("call_buttons");
+    showElement(callButtons);
+
+    const remoteVideo = document.getElementById("remote_video");
+    showElement(remoteVideo);
+
+    const newMessageInput = document.getElementById("new_message");
+    showElement(newMessageInput);
+    //block panel
+    disableDashboard();
 }
+
+
+//ui helper functions
+const enableDashboard = () => {
+    const dashboardBlocker = document.getElementById("dashboard_blur");
+    if (dashboardBlocker.classList.contains("display_none")) {
+        dashboardBlocker.classList.add("display_none");
+    }
+}
+
+const disableDashboard = () => {
+    const dashboardBlocker = document.getElementById("dashboard_blur");
+    if (dashboardBlocker.classList.contains("display_none")) {
+        dashboardBlocker.classList.remove("display_none");
+    }
+}
+
+const hideElement = (element) => {
+    if (!element.classList.contains("display_none")) {
+        element.classList.add("display_none");
+    }
+};
+
+const showElement = (element) => {
+    if (element.classList.contains("display_none")) {
+        element.classList.remove("display_none");
+    }
+};
