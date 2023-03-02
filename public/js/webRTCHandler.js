@@ -5,6 +5,7 @@ import * as store from "./store.js"
 
 let connectedUserDetails;
 let peerConnection; //defines local peer connection
+let dataChannel; //for chat
 
 //webRTC implementation part
 const defaultConstraints = { //constraints for media permission
@@ -34,6 +35,21 @@ export const getLocalPreview = () => { //gets local video
 const createPeerConnection = () => {
     peerConnection = new RTCPeerConnection(configuration); //new RTC connection between local and remote peer
     console.log("Getting ice candidates from Google STUN Server")
+    dataChannel = peerConnection.createDataChannel("chat"); //creates a new data channel for chat feature
+
+    //callee side
+    peerConnection.ondatachannel = (event) => {
+        const dataChannel = event.channel;
+
+        dataChannel.onopen = () => {
+            console.log("Peer connection is ready to receive data channel messages");
+        }
+
+        dataChannel.onmessages = (event) => {
+            const message = JSON.parse(event.data);
+        }
+    }
+
     //Gets info about our internet connection
     peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
@@ -72,8 +88,12 @@ const createPeerConnection = () => {
         for (const track of localStream.getTracks()) {
             peerConnection.addTrack(track, localStream);
         }
-
     }
+};
+
+export const sendMessageUsingDataChannel = (message) => {
+    const stringifiedMessage = JSON.stringify(message);
+    dataChannel.send(stringifiedMessage);
 }
 
 /*----------------------------------------------*/
