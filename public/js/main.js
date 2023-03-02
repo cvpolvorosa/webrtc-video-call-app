@@ -3,7 +3,7 @@ import * as wss from "./wss.js"
 import * as webRTCHandler from "./webRTCHandler.js"
 import * as constants from "./constants.js"
 import * as ui from "./ui.js"
-
+import * as recordingUtls from "./recordingUtils.js"
 //initialization of socket io connection
 const socket = io("/"); //Defines the connection. Alt: io("localhost:3000"); / is used incase we'll deploy it
 wss.registerSocketEvents(socket); //passing the connection to register socket events
@@ -79,3 +79,17 @@ sendMessageButton.addEventListener("click", () => {
     ui.appendMessage(message, true)
     newMessageInput.value = ""; //empties string after sending
 })
+
+//for recording
+
+const startRecordingButton = document.getElementById("start_recording_button");
+startRecordingButton.addEventListener("click", () => {
+    recordingUtls.startRecording();
+    ui.showRecordingPanel();
+});
+
+const stopRecordingButton = document.getElementById("stop_recording_button");
+stopRecordingButton.addEventListener("click", () => {
+    recordingUtls.stopRecording();
+    ui.resetRecordingButtons();
+});
