@@ -207,3 +207,36 @@ export const handleWebRTCCandidate = async (data) => {
         console.error("Error occured when trying to add received ice candidate", err);
     }
 }
+
+export const switchBetweenCameraAndScreenSharing = async (screenSharingActive) => {
+    if (screenSharingActive) {
+
+    } else {
+        console.log("switching for screensharing")
+        try {
+            //for getting screensharing access
+            const screenSharingStream = await navigator.mediaDevices.getDisplayMedia({
+                video: true //only passes video without audio
+            });
+
+            store.setScreenSharingStream(screenSharingStream);
+            //replace the video track which sender is sending to the screen share display
+            const senders = peerConnection.getSenders(); //getSenders specific peerconnection object, every sender is responsible for sending audio, video, display
+            
+            const sender = senders.find((sender) => {
+                return (sender.track.kind === screenSharingStream.getVideoTracks()[0].kind);
+            });
+            //if sender is found, replace the tracker the sender is sending
+            if (sender) {
+                sender.replaceTrack(screenSharingStream.getVideoTracks()[0]);
+            }
+
+            store.setScreenSharingActive(!screenSharingActive);
+
+            //change our local preview to the screen share
+            ui.updateLocalVideo(screenSharingStream);
+        } catch (err) {
+            console.error("Error occured when switching for screensharing", err)
+        }
+    }
+}
