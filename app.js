@@ -54,6 +54,11 @@ io.on("connection", (socket) => {//if the connection will occur, we'll get the s
 
     })
 
+    socket.on("pre-offer-answer", (data) => {
+        console.log("preoffer answer came")
+        console.log(data)
+    })
+
     socket.on('disconnect', () => { //listens if the client disconnects (Close browser/tab, lose internet conn, refreshes)
         console.log("User Disconnected");
 
@@ -61,9 +66,9 @@ io.on("connection", (socket) => {//if the connection will occur, we'll get the s
         const newConnectedPeers = connectedPeers.filter((peerSocketId) =>
             peerSocketId !== socket.id
         );
-    //Updates the connected pears with new filtered elements
-    connectedPeers = newConnectedPeers;
-});
+        //Updates the connected pears with new filtered elements
+        connectedPeers = newConnectedPeers;
+    });
 });
 server.listen(PORT, () => { //Starts the server
     console.log(`Listening on PORT: ${PORT}`)

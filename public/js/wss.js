@@ -24,3 +24,7 @@ export const sendPreOffer = (data) => {
     socketIO.emit("pre-offer", data); //After successful connection, emit to the server that we're passing the data
 
 }
+
+export const sendPreOfferAnswer = (data) => {
+    socketIO.emit("pre-offer-answer", data);
+}
