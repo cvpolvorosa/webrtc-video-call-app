@@ -70,17 +70,17 @@ export const handlePreOfferAnswer = (data) => {
     ui.removeAllDialogs();
     //if user is not found/exists
     if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
-
+        ui.showInfoDialog(preOfferAnswer);
     }
 
     //if callee is in another call
     if (preOfferAnswer === constants.preOfferAnswer.CALL_UNAVAILABLE) {
-
+        ui.showInfoDialog(preOfferAnswer);
     }
 
     // rejected
     if (preOfferAnswer === constants.preOfferAnswer.CALL_REJECTED) {
-
+        ui.showInfoDialog(preOfferAnswer);
     }
 
     //accepted

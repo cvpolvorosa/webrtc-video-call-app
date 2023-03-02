@@ -48,6 +48,11 @@ io.on("connection", (socket) => {//if the connection will occur, we'll get the s
                 callType
             }
             io.to(calleePersonalCode).emit("pre-offer", data); //if connectedpeer is available emit data to them
+        } else { //if callee not found, emit back to caller data
+            const data = {
+                preOfferAnswer: "CALLEE_NOT_FOUND"
+            }
+            io.to(socket.id).emit("pre-offer-answer", data)
         }
 
     })
