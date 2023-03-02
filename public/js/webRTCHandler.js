@@ -57,6 +57,7 @@ const sendPreOfferAnswer = (preOfferAnswer) => {
       callerSocketId: connectedUserDetails.socketId,
       preOfferAnswer,
     };
+    ui.removeAllDialogs();
     console.log("connected socketid")
     console.log(connectedUserDetails.socketId)
     wss.sendPreOfferAnswer(data);
@@ -66,7 +67,7 @@ export const handlePreOfferAnswer = (data) => {
     const { preOfferAnswer } = data;
     console.log("pre offer answer received yes")
     console.log(data);
-
+    ui.removeAllDialogs();
     //if user is not found/exists
     if (preOfferAnswer === constants.preOfferAnswer.CALLEE_NOT_FOUND) {
 

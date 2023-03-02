@@ -29,3 +29,9 @@ export const showCallingDialog = (rejectCallHandler) => {
     dialog.appendChild(callingDialog);
 
 };
+
+export const removeAllDialogs = () => {
+    //removes all dialogs inside HTML dialog element
+    const dialog = document.getElementById("dialog");
+    dialog.querySelectorAll("*").forEach((dialog) => dialog.remove());
+}
