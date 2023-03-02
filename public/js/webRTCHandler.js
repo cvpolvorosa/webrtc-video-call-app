@@ -209,8 +209,20 @@ export const handleWebRTCCandidate = async (data) => {
 }
 
 export const switchBetweenCameraAndScreenSharing = async (screenSharingActive) => {
-    if (screenSharingActive) {
+    if (screenSharingActive) { //switch back to camera, if screensharing is active
+        const localStream = store.getState().localStream;
+        const senders = peerConnection.getSenders();
 
+        const sender = senders.find((sender) => {
+            return (sender.track.kind === localStream.getVideoTracks()[0].kind);
+        });
+        //if sender is found, replace the tracker the sender is sending
+        if (sender) {
+            sender.replaceTrack(localStream.getVideoTracks()[0]);
+        }
+
+        store.setScreenSharingActive(!screenSharingActive);
+        ui.updateLocalVideo(localStream);
     } else {
         console.log("switching for screensharing")
         try {
@@ -222,7 +234,7 @@ export const switchBetweenCameraAndScreenSharing = async (screenSharingActive) =
             store.setScreenSharingStream(screenSharingStream);
             //replace the video track which sender is sending to the screen share display
             const senders = peerConnection.getSenders(); //getSenders specific peerconnection object, every sender is responsible for sending audio, video, display
-            
+
             const sender = senders.find((sender) => {
                 return (sender.track.kind === screenSharingStream.getVideoTracks()[0].kind);
             });
