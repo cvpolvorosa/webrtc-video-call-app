@@ -221,6 +221,9 @@ export const switchBetweenCameraAndScreenSharing = async (screenSharingActive) =
             sender.replaceTrack(localStream.getVideoTracks()[0]);
         }
 
+        //stop screen sharing stream
+        store.getState().screenSharingStream.getTracks().forEach((track) => track.stop());
+
         store.setScreenSharingActive(!screenSharingActive);
         ui.updateLocalVideo(localStream);
     } else {
