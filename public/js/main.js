@@ -93,3 +93,29 @@ stopRecordingButton.addEventListener("click", () => {
     recordingUtls.stopRecording();
     ui.resetRecordingButtons();
 });
+
+const pauseRecordingButton = document.getElementById("pause_recording_button");
+pauseRecordingButton.addEventListener("click", () => {
+    recordingUtls.pauseRecording();
+    ui.switchRecordingButtons(true);
+});
+
+const resumeRecordingButton = document.getElementById("resume_recording_button");
+resumeRecordingButton.addEventListener("click", () => {
+    recordingUtls.resumeRecording();
+    ui.switchRecordingButtons();
+});
+
+
+//hang up
+
+const hangUpButton = document.getElementById("hang_up_button");
+hangUpButton.addEventListener("click", () => {
+    webRTCHandler.handleHangup();
+});
+
+
+const hangUpChatButton = document.getElementById("hang_up_button");
+hangUpChatButton.addEventListener("click", () => {
+    webRTCHandler.handleHangup();
+});

@@ -23,7 +23,11 @@ export const registerSocketEvents = (socket) => { //after socket connection is p
     socket.on("pre-offer-answer", (data) => {
         console.log("handled")
         webRTCHandler.handlePreOfferAnswer(data);
-    })
+    });
+
+    socket.on("user-hanged-up", () => {
+        webRTCHandler.handleConnectedUserHangedUp();
+    });
 
     socket.on("webRTC-signaling", (data) => {
         switch (data.type) {
@@ -57,4 +61,8 @@ export const sendPreOfferAnswer = (data) => {
 //allows us to emit an event to the server for webrtc signaling
 export const sendDataUsingWebRTCSignaling = (data) => {
     socketIO.emit("webRTC-signaling", data);
+}
+
+export const sendUserHangedUp = (data) => {
+    socketIO.emit("user-hanged-up", data);
 }
