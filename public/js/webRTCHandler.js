@@ -1,9 +1,77 @@
 import * as wss from "./wss.js"
 import * as constants from "./constants.js"
 import * as ui from "./ui.js"
+import * as store from "./store.js"
 
 let connectedUserDetails;
+let peerConnection; //defines local peer connection
 
+//webRTC implementation part
+const defaultConstraints = { //constraints for media permission
+    audio: true,
+    video: true,
+}
+
+const configuration = {
+    iceServers: [
+        {
+            urls: "stun:stun.l.google.com:13902" //free stun server offered and maintained by Google
+        }
+    ]
+}
+
+export const getLocalPreview = () => { //gets local video
+    navigator.mediaDevices.getUserMedia(defaultConstraints)
+        .then((stream) => { //used then, because this is a promise
+            ui.updateLocalVideo(stream);
+            store.setLocalStream(stream);
+        }).catch((err) => { //logs error why there is no access to media
+            console.log("An error occured when trying to get an access to the camera");
+            console.log(err);
+        })
+}
+
+const createPeerConnection = () => {
+    peerConnection = new RTCPeerConnection(configuration); //new RTC connection between local and remote peer
+    console.log("Getting ice candidates from Google STUN Server")
+    //Gets info about our internet connection
+    peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+            //send our ice candidates to other peer
+        }
+    }
+
+    peerConnection.onconnectionstatechange = (event) => {
+        //This event will occur if the ICE candidates will successfully exchanged
+        if (peerConnection.connectionState === "connected") {
+            console.log("successfully connected to other peer");
+        }
+
+    }
+
+    //when connection is established, this is for receiving tracks to stream the remote user
+    const remoteStream = new MediaStream();
+    store.setRemoteStream(remoteStream);
+    ui.updateRemoteVideo(remoteStream);
+
+    //tracks for audio and video
+    peerConnection.ontrack = (event) => {
+        remoteStream.addTrack(event.track);
+    }
+
+    //add our stream to peer connection (if it is video call)
+    if (connectedUserDetails.callType === constants.callType.VIDEO_PERSONAL_CODE) {
+        const localStream = store.getState().localStream;
+
+        //adds the audio and video track to the peer connection
+        for (const track of localStream.getTracks()) {
+            peerConnection.addTrack(track, localStream);
+        }
+
+    }
+}
+
+/*----------------------------------------------*/
 export const sendPreOffer = (callType, calleePersonalCode) => {
     connectedUserDetails = {
         callType,
@@ -37,6 +105,7 @@ export const handlePreOffer = (data) => {
 //accept pre offer answer
 const acceptCallHandler = () => {
     console.log("call accepted")
+    createPeerConnection(); //webrtc create connection
     sendPreOfferAnswer(constants.preOfferAnswer.CALL_ACCEPTED);
     ui.showCallElements(connectedUserDetails.callType); //callee side; show call elements
 
@@ -56,8 +125,8 @@ const callingDialogRejectCallHandler = () => {
 //func for sending pre offer answer, either accept or reject
 const sendPreOfferAnswer = (preOfferAnswer) => {
     const data = {
-      callerSocketId: connectedUserDetails.socketId,
-      preOfferAnswer,
+        callerSocketId: connectedUserDetails.socketId,
+        preOfferAnswer,
     };
     ui.removeAllDialogs();
     console.log("connected socketid")
@@ -88,7 +157,26 @@ export const handlePreOfferAnswer = (data) => {
     //accepted
     if (preOfferAnswer === constants.preOfferAnswer.CALL_ACCEPTED) {
         ui.showCallElements(connectedUserDetails.callType); //caller side; show call elements
+        createPeerConnection(); //webrtc create connection
         //send webrtc offer and establish connection
+        sendWebRTCOffer();
     }
+};
 
+//caller side; create peer connection offer if callee accepted
+const sendWebRTCOffer = async () => {
+    const offer = await peerConnection.createOffer(); //includes our sdp information
+    await peerConnection.setLocalDescription(offer);
+    //set our sdp and then send it to other user
+    wss.sendDataUsingWebRTCSignaling({
+        connectedUserSocketId: connectedUserDetails.socketId,
+        type: constants.webRTCSignaling.OFFER,
+        offer: offer
+    });
+};
+
+//callee
+export const handleWebRTCOffer = (data) => {
+    console.log("webRTC offer came")
+    console.log(data)
 }

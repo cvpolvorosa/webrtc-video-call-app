@@ -73,6 +73,19 @@ io.on("connection", (socket) => {//if the connection will occur, we'll get the s
         }
     });
 
+    socket.on("webRTC-signaling", (data) => {
+        const { connectedUserSocketId } = data;
+
+        //check if user is connected/exists
+        const connectedPeer = connectedPeers.find(
+            (peerSocketId) => peerSocketId === connectedUserSocketId
+        );
+        //after checking if callee is connected, emit data to them for webrtc offer
+        if(connectedPeer){
+            io.to(connectedUserSocketId).emit("webRTC-signaling", data);
+        }
+    })
+
     socket.on('disconnect', () => { //listens if the client disconnects (Close browser/tab, lose internet conn, refreshes)
         console.log("User Disconnected");
 

@@ -8,6 +8,8 @@ import * as constants from "./constants.js"
 const socket = io("/"); //Defines the connection. Alt: io("localhost:3000"); / is used incase we'll deploy it
 wss.registerSocketEvents(socket); //passing the connection to register socket events
 
+//executes func for getting local preview
+webRTCHandler.getLocalPreview();
 
 //register event listener for personal code copy button
 const personalCodeCopyButton = document.getElementById("personal_code_copy_button");
